@@ -1,0 +1,54 @@
+TODO:
+
+- passer l'allocateur en multithreadé
+    - comprendre le fonctionnement de l'allocateur
+    - isoler les sections critiques
+    - mettre en place une stratégie de synchronisation
+
+Non critique :
+- lectures d'infos en concurrence
+
+Critique :
+- ecriture (verrou exclusif) (après c'est aux programmes au dessus de faire gaffe)
+- allocation
+- libération
+
+====
+mem_alloc - modif de la liste chainée
+mem_free - modif de la liste chainée
+mem_show - accès aux infos de la liste chainée
+---
+mem_init : init sync structs
+====
+
+Idées :
+Utiliser des wrapper autour des fonctions critiques ? ex:
+mem_alloc(){
+    mutex_lock()
+    _mem_alloc()
+    mutex_unlock()
+}
+
+
+- choisir des programmes réels ou construire des séquences
+d’allocations/libérations pour mettre en évidence le comportement de
+l’allocateur. L’objectif est d’essayer de mettre en évidence les
+situations à forte fragmentation mémoire.
+    - Comprendre l'allocateur, son fonctionnement
+    - Le mettre en défaut
+- calculer les quatre métriques présentés pour les différents cas d’usage
+    - Mémoire utilisé VS mémoire demandée par un programme
+    - Mémoire utilisée par l'allocateur vis à vis du max demandé par un prog
+    - Mémoire max utilisée par rapport a ce qui est demandé par le prog
+        lorsqu'il utilise le max de mémoire
+    - Mémoire max utilisée par l'alloc vis à vis du max de la mémoire réelle
+- identifier un comportement typique en mémoire pour la plupart des
+programmes réels
+    - comment se comporte en mémoire un programme classique ?
+- identifier l’influence de la métrique utilisée dans vos résultats ;
+    - ??? bonne unité de mesure ?
+- comparer les différentes stratégies en fonction de la fragmentation induite,
+et classifier les stratégies
+en conséquence.
+    - obtenir des stats sur les différentes stratégies
+    - les comparer
