@@ -39,6 +39,7 @@ struct db {
 	size_t taille;
 };
 
+/* sentinel est l'adresse du premier bloc libre */
 struct header {
 	struct fb sentinel;
 	mem_fit_function_t *fit;
@@ -97,6 +98,8 @@ void* mem_alloc(size_t taille)
 	*/
 	taille=(taille + (ALIGNMENT - 1)) & ~(ALIGNMENT - 1);
 
+        // TODO: début section critique
+
 	/* On cherche le prédécesseur d'un bloc libre assez grand */
 	/* Il existe toujours (si le bloc existe) grâce à la sentinelle */
 	struct fb *prev = header()->fit(sentinel(), taille);
@@ -123,6 +126,8 @@ void* mem_alloc(size_t taille)
 	}
 	/* On met à jour la liste des blocs libres */
 	prev->next = new_fb;
+
+        // TODO: fin section critique
 
 	return new_db + 1;
 }
@@ -162,6 +167,9 @@ void mem_free(void *mem)
 
 	/* On crée un nouveau bloc libre et on le place dans la liste à la bonne position */
 	struct fb *fb = (struct fb *) db;
+
+        // TODO : début section critique, on accède à une valeur non statique
+
 	struct fb *prev = sentinel();
 	struct fb *current = prev->next;
 	while ((current != NULL) && (current < fb)) {
@@ -176,10 +184,14 @@ void mem_free(void *mem)
 	fb = merge_fbs(prev, fb);
 	/* A droite */
 	merge_fbs(fb, current);
+
+        // TODO : fin section critique
 }
 
 void mem_show(void (*print)(void *, size_t, int))
 {
+    // TODO : début section critique
+
 	/* On suit les blocs libres... */
 	struct fb *fb = sentinel()->next;
 	/* ... et en même temps on parcours la mémoire séquentiellement */
@@ -196,6 +208,7 @@ void mem_show(void (*print)(void *, size_t, int))
 		print(current+1, current->taille, free);
 		current = (struct db *) ((char *) current + current->taille);
 	}
+        // TODO : fin section critique
 }
 
 struct fb *first_fit(struct fb* fb, size_t taille)
