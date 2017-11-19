@@ -1,3 +1,7 @@
+DONE:
+- isoler quelques sections critiques
+- ajouter un commentaire dans mem.c
+
 TODO:
 
 - passer l'allocateur en multithreadé
@@ -6,7 +10,7 @@ TODO:
     - mettre en place une stratégie de synchronisation
 
 Non critique :
-- lectures d'infos en concurrence
+- lectures d'infos en concurrence si modif
 
 Critique :
 - ecriture (verrou exclusif) (après c'est aux programmes au dessus de faire gaffe)
