@@ -1,3 +1,7 @@
+memshell
+test_init
+
 *.pdf
 *.swp
 *.o
+.*
