@@ -4,7 +4,8 @@
 #include <stdio.h>
 
 #ifndef MEMORY_SIZE
-#define MEMORY_SIZE 8192
+//#define MEMORY_SIZE 8192
+#define MEMORY_SIZE 1073741824
 #endif
 
 static char memory[MEMORY_SIZE];

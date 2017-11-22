@@ -2,12 +2,16 @@ DONE:
 - isoler quelques sections critiques
 - ajouter un commentaire dans mem.c
 
+Stratégie de synchro :
+header() contient un mutex qui permet d'empêcher un accès concurrent aux
+données sensibles
+- ajout des mutex lock/unlock dans mem.c
+
 TODO:
 
 - passer l'allocateur en multithreadé
-    - comprendre le fonctionnement de l'allocateur
-    - isoler les sections critiques
-    - mettre en place une stratégie de synchronisation
+    - debug l'allocateur
+        - créer un programme multithread simple pour tester libmalloc
 
 Non critique :
 - lectures d'infos en concurrence si modif
