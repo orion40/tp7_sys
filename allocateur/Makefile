@@ -4,7 +4,7 @@ CC=gcc
 # on Debian/Ubuntu)
 #HOST32= -m32
 
-CFLAGS+= $(HOST32) -Wall -Werror -g -DMEMORY_SIZE=128000
+CFLAGS+= $(HOST32) -Wall -Werror -std=c99 -O2 -g -DMEMORY_SIZE=128000
 CFLAGS+= -DDEBUG
 # pour tester avec ls
 CFLAGS+= -fPIC
@@ -15,8 +15,8 @@ PROGRAMS=memshell $(TESTS)
 
 .PHONY: clean all test_ls dist
 
-all: $(PROGRAMS)
-	for file in $(TESTS);do ./$$file; done
+all: $(PROGRAMS) libmalloc.so #clean
+	#for file in $(TESTS);do ./$$file; done
 
 # dépendences des binaires
 $(PROGRAMS) libmalloc.so: %: mem.o common.o
@@ -32,6 +32,7 @@ $(patsubst %.c,%.o,$(wildcard *.c)): %.o: .%.deps
 # seconde partie du sujet
 libmalloc.so: malloc_stub.o
 	$(CC) -shared -Wl,-soname,$@ $^ -o $@
+	echo "libmalloc done"
 
 test_ls: libmalloc.so
 	LD_PRELOAD=./libmalloc.so ls
@@ -39,6 +40,7 @@ test_ls: libmalloc.so
 # nettoyage
 clean:
 	rm -f *.o $(PROGRAMS) libmalloc.so .*.deps
+
 
 ifeq ($(SOURCES_LIST),)
 SOURCES_LIST=$(wildcard *.c)

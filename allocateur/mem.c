@@ -1,5 +1,7 @@
 #include "mem.h"
 #include "common.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <assert.h>
 #include <stddef.h>
@@ -13,6 +15,7 @@
 
 #define THREADS 1
 
+
 /* struct fb : décrit une zone de mémoire libre.
    La mémoire libre commence là où est placé la structure.
    Le champ 'taille' contient la taille totale de la zone libre
@@ -22,24 +25,22 @@
    l'ordre croissant de la mémoire (NULL si c'est la dernière).
    Deux zones libres ne peuvent pas être adjacentes (elles sont
    fusionnées en une seule au besoin)
-   */
-
+*/
 struct fb {
     size_t taille;
     struct fb *next;
 };
 
+
 /* struct db : décrit une zone de mémoire occupée.
    La zone allouée commence après cette structure de contrôle
    Le champ 'taille' contient la taille totale de cette zone
    en comptabilisant la taille de la structure 'struct db'
-
-
 */
-
 struct db {
     size_t taille;
 };
+
 
 /* sentinel est l'adresse du premier bloc libre */
 struct header {
@@ -66,7 +67,7 @@ void mem_init(void* mem, size_t taille)
 
       write(0,
             "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-       
+
             ,sizeof("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"));
     /* Interface obsolète remplacée par common.c */
     assert(mem == get_memory_adr());
@@ -216,6 +217,7 @@ void mem_free(void *mem)
 #endif
 }
 
+
 void mem_show(void (*print)(void *, size_t, int))
 {
 #ifdef THREADS
@@ -239,11 +241,14 @@ void mem_show(void (*print)(void *, size_t, int))
         print(current+1, current->taille, free);
         current = (struct db *) ((char *) current + current->taille);
     }
+
 #ifdef THREADS
     /* fin section critique */
-    pthread_mutex_lock(&header()->mutex);
+    pthread_mutex_unlock(&header()->mutex);
 #endif
+
 }
+
 
 struct fb *first_fit(struct fb* fb, size_t taille)
 {
@@ -256,6 +261,7 @@ struct fb *first_fit(struct fb* fb, size_t taille)
     }
     return NULL;
 }
+
 
 struct fb *best_fit(struct fb* fb, size_t taille)
 {
